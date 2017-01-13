@@ -12,7 +12,7 @@ $conn = new mysqli($server, $username, $password, $db);
 $result = mysqli_query($conn, "select * from prueba");
 
 while ($row = mysqli_fetch_array($result)) {
-    echo "id: " . $row{'id'} . ", nombre: " . $row{'nombre'};
+    echo "<p>id: " . $row{'id'} . ", nombre: " . $row{'nombre'}."</p>";
 }
 
 mysqli_close($conn);
