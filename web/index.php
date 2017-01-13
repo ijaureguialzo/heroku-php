@@ -1,25 +1,20 @@
 <?php
 
-require('../vendor/autoload.php');
+$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 
-$app = new Silex\Application();
-$app['debug'] = true;
+$server = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$db = substr($url["path"], 1);
 
-// Register the monolog logging service
-$app->register(new Silex\Provider\MonologServiceProvider(), array(
-  'monolog.logfile' => 'php://stderr',
-));
+$conn = new mysqli($server, $username, $password, $db);
 
-// Register view rendering
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/views',
-));
+$result = mysqli_query($conn, "select * from prueba");
 
-// Our web handlers
+while ($row = mysqli_fetch_array($result)) {
+    echo "id: " . $row{'id'} . ", nombre: " . $row{'nombre'};
+}
 
-$app->get('/', function() use($app) {
-  $app['monolog']->addDebug('logging output.');
-  return $app['twig']->render('index.twig');
-});
+mysqli_close($conn);
 
-$app->run();
+?>
