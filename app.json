@@ -1,6 +1,6 @@
 {
   "name": "Heroku-PHP",
   "description": "Plantilla de PHP para Heroku.",
-  "repository": "https://github.com/heroku/php-getting-started",
+  "repository": "https://github.com/ijaureguialzo/heroku-php",
   "addons": []
 }
