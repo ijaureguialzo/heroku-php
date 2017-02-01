@@ -1,25 +1,52 @@
 <?php
 
-require('../vendor/autoload.php');
+// https://devcenter.heroku.com/articles/cleardb#using-cleardb-with-php
 
-$app = new Silex\Application();
-$app['debug'] = true;
+$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 
-// Register the monolog logging service
-$app->register(new Silex\Provider\MonologServiceProvider(), array(
-  'monolog.logfile' => 'php://stderr',
-));
+$server = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$db = substr($url["path"], 1);
 
-// Register view rendering
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/views',
-));
+$mysqli = new mysqli($server, $username, $password, $db);
 
-// Our web handlers
+// http://tutorial.world.edu/web-development/create-mysqli-php-insert-select-update-delete-mysql-database-table/
 
-$app->get('/', function() use($app) {
-  $app['monolog']->addDebug('logging output.');
-  return $app['twig']->render('index.twig');
-});
+/*
+CREATE TABLE `people` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `country` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+*/
 
-$app->run();
+mysqli_report(MYSQLI_REPORT_ERROR); // Quitar en producción
+
+// INSERT
+$name = "Daniel";
+$email = "daniel@world.edu";
+$country = "India";
+
+$stmt = $mysqli->prepare("INSERT INTO people (name,email,country) VALUES (?, ?, ?)");
+$stmt->bind_param("sss", $name,
+    $email,
+    $country
+);
+$stmt->execute();
+$stmt->close();
+
+
+// SELECT
+$stmt = $mysqli->prepare("SELECT name, email, country FROM people");
+$stmt->execute();
+mysqli_stmt_bind_result($stmt,$name,$email,$country);
+
+/* now we want to fetch the data from the database */
+while (mysqli_stmt_fetch($stmt)) {
+    printf("%s %s %s\n", $name,$email,$country);
+}
+/* close statement */
+mysqli_stmt_close($stmt);
