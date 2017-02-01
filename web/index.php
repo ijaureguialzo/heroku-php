@@ -13,40 +13,18 @@ $mysqli = new mysqli($server, $username, $password, $db);
 
 // http://tutorial.world.edu/web-development/create-mysqli-php-insert-select-update-delete-mysql-database-table/
 
-/*
-CREATE TABLE `people` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `country` varchar(25) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
-
 mysqli_report(MYSQLI_REPORT_ERROR); // Quitar en producción
 
-// INSERT
-$name = "Daniel";
-$email = "daniel@world.edu";
-$country = "India";
+// http://www.generatedata.com/
 
-$stmt = $mysqli->prepare("INSERT INTO people (name,email,country) VALUES (?, ?, ?)");
-$stmt->bind_param("sss", $name,
-    $email,
-    $country
-);
+$stmt = $mysqli->prepare("SELECT nombre, email, ciudad FROM personas");
 $stmt->execute();
-$stmt->close();
+mysqli_stmt_bind_result($stmt, $nombre, $email, $ciudad);
 
-
-// SELECT
-$stmt = $mysqli->prepare("SELECT name, email, country FROM people");
-$stmt->execute();
-mysqli_stmt_bind_result($stmt,$name,$email,$country);
-
-/* now we want to fetch the data from the database */
+printf("<table>");
 while (mysqli_stmt_fetch($stmt)) {
-    printf("%s %s %s\n", $name,$email,$country);
+    printf("<tr><td>%s</td><td>%s</td><td>%s</td></tr>", $nombre, $email, $ciudad);
 }
-/* close statement */
+printf("</table>");
+
 mysqli_stmt_close($stmt);
