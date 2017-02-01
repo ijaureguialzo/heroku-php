@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta lang="en" />
+
+    <!-- http://stackoverflow.com/a/3130857 -->
+    <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+
     <title>Heroku-PHP</title>
 </head>
 <h1>Ejemplo de PHP+MySQL en Heroku</h1>
